@@ -138,7 +138,8 @@ Deleted 1138 cookies
 #### Delete all Google cookies
 
 We create a selection that contains only cookies with the string "google"
-in the host field, then we list the contents.
+in the host field, then we list the contents. After seeing the contents,
+we delete them all.
 
 ```
 > sch google
@@ -162,7 +163,7 @@ in the host field, then we list the contents.
 Deleted 10 cookies
 ```
 
-If a selection contains more rows than the height of the console (it, it
+If a selection contains more rows than the height of the console (ie, it
 would scroll), then Oatmeal will paginate the results, showing you only
 the amount that will fit comfortably on the screen. You can navigate
 between pages using the `n` and `p` commands.
@@ -276,7 +277,8 @@ automate the cookie-cleansing by altering the oatmeal invocation to be:
 oatmeal.py -e 'sca; de; db'
 ```
 
-This will automatically remove any expired cookies, as well as any cookies 
+This will automatically remove any expired cookies, as well as any cookies
+found in the blacklist.
 
 If you are even more strict, you can delete all cookies who do not appear
 in your whitelist. We can use the "**d**elete **a**ll" (`da`) command, as
