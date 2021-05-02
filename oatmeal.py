@@ -102,10 +102,7 @@ def cmd_help(command=None, *args):
         if not getattr(func, '__doc__'):
             err(f'No help available for [pink1]{command}[/pink1]')
             return 0
-        doc = str(func.__doc__)
-
-        doc = re.sub(r'Usage: (\w+)', 'Usage: [hl]\\1[/hl]', doc)
-        info(doc)
+        info(re.sub(r'Usage: (\w+)', 'Usage: [hl]\\1[/hl]', func.__doc__))
         return 0
 
     # List all commands.
