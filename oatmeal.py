@@ -150,6 +150,8 @@ def cmd_exit(*args):
 def cmd_list(*args):
     """
     List the current page of the selection.
+
+    Usage: l
     """
     if selection.data is None:
         return warn("No selection.")
