@@ -305,3 +305,8 @@ a tiled one. This is a personal preference, but not required for this
 workflow.
 
 
+## License
+
+Oatmeal is Copyright (C) 2021 Judd Vinet, and is licensed under the MIT
+License.
+
