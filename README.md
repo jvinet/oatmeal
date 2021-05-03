@@ -1,8 +1,9 @@
 # Oatmeal
 
 Oatmeal is a simple, console-based cookie management utility designed for
-use with Qutebrowser, which is powered by QT WebEngine. I expect it will
-work with any Chromium-based engine, however.
+use with [Qutebrowser](https://github.com/qutebrowser/qutebrowser), which
+is powered by QT WebEngine. I expect it will work with any Chromium-based
+engine, however.
 
 It is basically a dressed-up SQLite client that provides a streamlined
 process to delete entries from a DB table. You could do all of this with
@@ -193,7 +194,7 @@ Added '.sleazytracker.com' to blacklist.
 > ah scholar.google.com
 Added '.scholar.google.com' to whitelist.
 > l
-      Full whitelist
+      Full Whitelist
 ┏━━━┳━━━━━━━━━━━━━━━━━━━━━┓
 ┃ # ┃ Host                ┃
 ┡━━━╇━━━━━━━━━━━━━━━━━━━━━┩
@@ -234,7 +235,7 @@ As a Qutebrowser user, I also use a third-party script that provides
 a mechanism to run multiple QB profiles. It does this via some path-based
 sleight-of-hand, but the result is a fairly sooth workflow, one that
 allows me to containerize my web browsing. For example, I might have one
-profile social media, one for work, one for shopping, etc.
+profile for social media, one for work, one for shopping, etc.
 
 See the [QB multi-profile script](https://github.com/jtyers/qutebrowser-profile).
 

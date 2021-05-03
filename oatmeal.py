@@ -100,7 +100,7 @@ def cmd_help(command=None, *args):
             return 1
         func = COMMANDS[command]
         if not getattr(func, '__doc__'):
-            err(f'No help available for [pink1]{command}[/pink1]')
+            err(f'No help available for [hl]{command}[/hl]')
             return 0
         info(re.sub(r'Usage: (\w+)', 'Usage: [hl]\\1[/hl]', func.__doc__))
         return 0
@@ -294,7 +294,7 @@ def cmd_select_whitelist_all(*args):
 
     Usage: swa
     """
-    selection.set(whitelist, 'Full whitelist', type='whitelist')
+    selection.set(whitelist, 'Full Whitelist', type='whitelist')
 
 
 def cmd_select_whitelist_by_host(host=None, *args):
