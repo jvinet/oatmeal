@@ -17,9 +17,9 @@ the standard `sqlite` CLI client; it would just take longer.
 The primary use case for Oatmeal is to cleanse your cookie database after
 a browsing session[1].
 
-It allows for manual selection & deletion, but also supports a blacklist
-and whitelist, which can be provide a very fast workflow for cookie
-cleansing operations.
+It allows for manual selection & deletion, but also supports a blacklist and
+whitelist, which can provide a very fast workflow for cookie cleansing
+operations.
 
 > [1] As SQLite does not support concurrent write access, the browser
 > process should _not_ be running when Oatmeal is running. This is why
@@ -233,7 +233,7 @@ There are 2241 cookies.
 
 As a Qutebrowser user, I also use a third-party script that provides
 a mechanism to run multiple QB profiles. It does this via some path-based
-sleight-of-hand, but the result is a fairly sooth workflow, one that
+sleight-of-hand, but the result is a fairly smooth workflow, one that
 allows me to containerize my web browsing. For example, I might have one
 profile for social media, one for work, one for shopping, etc.
 
