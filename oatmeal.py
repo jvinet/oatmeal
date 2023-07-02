@@ -3,6 +3,7 @@
 Oatmeal. A simple cookie manager for Chromium-based browser engines.
 
 Copyright (C) 2021, Judd Vinet <jvinet@zeroflux.org>.
+https://github.com/jvinet/oatmeal
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -41,9 +42,10 @@ from rich.theme import Theme
 
 __version__ = '0.1'
 
-DB_PATH = './Cookies'
-WL_PATH = './whitelist.json'
-BL_PATH = './blacklist.json'
+QUTE_PATH = '/home/archx/.local/share/qutebrowser/webengine'
+DB_PATH = QUTE_PATH + '/Cookies'
+WL_PATH = QUTE_PATH + '/whitelist.json'
+BL_PATH = QUTE_PATH + '/blacklist.json'
 
 interactive = os.isatty(sys.stdin.fileno())
 
@@ -252,17 +254,22 @@ def cmd_select_cookies_all(*args):
     selection.set(cookies, 'All Cookies')
 
 
-def cmd_select_cookies_by_host(host=None, *args):
+def cmd_select_cookies_by_host(*args):
     """
-    Select all cookies matching host.
+    Select all cookies matching host(s).
 
-    Usage: sch <host>
+    Usage: sch <host1> <host2> ...
     """
-    if not host:
-        return err_arg('host')
+    if not args:
+        return err_arg('host(s)')
 
-    cookies = cookie_find('host_key LIKE ?', (f'%{host}%',))
-    selection.set(cookies, f"Cookies for '{host}'")
+    all_hosts = []
+
+    for host in args:
+        cookies = cookie_find('host_key LIKE ?', (f'%{host}%',))
+        all_hosts = all_hosts + cookies
+
+    selection.set(all_hosts, f"Cookies for '{host}'")
 
 
 def cmd_select_blacklist_all(*args):
@@ -274,18 +281,22 @@ def cmd_select_blacklist_all(*args):
     selection.set(blacklist, 'Full Blacklist', type='blacklist')
 
 
-def cmd_select_blacklist_by_host(host=None, *args):
+def cmd_select_blacklist_by_host(*args):
     """
-    Select all blacklist entries matching host.
+    Select all blacklist entries matching host(s).
 
-    Usage: sbh <host>
+    Usage: sbh <host1> <host2> ...
     """
-    if not host:
-        return err_arg('host')
+    if not args:
+        return err_arg('host(s)')
 
-    # Look for substring matches.
-    matches = [x for x in blacklist if host in x]
-    selection.set(matches, f"Blacklist Entries for '{host}'", type='blacklist')
+    all_hosts = []
+
+    for host in args:
+        matches = [x for x in blacklist if host in x and not x in all_hosts]
+        all_hosts = all_hosts + matches
+
+    selection.set(all_hosts, f"Blacklist Entries for '{host}'", type='blacklist_selection')
 
 
 def cmd_select_whitelist_all(*args):
@@ -297,18 +308,22 @@ def cmd_select_whitelist_all(*args):
     selection.set(whitelist, 'Full Whitelist', type='whitelist')
 
 
-def cmd_select_whitelist_by_host(host=None, *args):
+def cmd_select_whitelist_by_host(*args):
     """
-    Select all whitelist entries matching host.
+    Select all whitelist entries matching host(s).
 
-    Usage: swh <host>
+    Usage: swh <host1> <host2> ...
     """
-    if not host:
-        return err_arg('host')
+    if not args:
+        return err_arg('host(s)')
 
-    # Look for substring matches.
-    matches = [x for x in whitelist if host in x]
-    selection.set(matches, f"Whitelist Entries for '{host}'", type='whitelist')
+    all_hosts = []
+
+    for host in args:
+        matches = [x for x in whitelist if host in x and not x in all_hosts]
+        all_hosts = all_hosts + matches
+
+    selection.set(all_hosts, f"Whitelist Entries for '{host}'", type='whitelist_selection')
 
 
 def cmd_add_host(host=None, *args):
@@ -331,6 +346,44 @@ def cmd_add_host(host=None, *args):
 
     lst.append(host)
     info(f"Added '{host}' to {selection.type}.")
+
+
+def cmd_add_to_whitelist(*args):
+    """
+    Add the selection to whitelist.
+
+    Usage: aw
+    """
+    if selection.type != 'cookies':
+        warn("This command only works on cookie selections. "
+             "Try using 'sca' or 'sch' first.")
+        return 1
+
+    for c in selection.data:
+        # Append each cookie from selection to whitelist
+        host = c['host_key']
+        if not any(w == host for w in whitelist):
+            whitelist.append(host)
+            info(f"Added '{host}' to whitelist.")
+
+
+def cmd_add_to_blacklist(*args):
+    """
+    Add the selection to blacklist.
+
+    Usage: ab
+    """
+    if selection.type != 'cookies':
+        warn("This command only works on cookie selections. "
+             "Try using 'sca' or 'sch' first.")
+        return 1
+
+    for c in selection.data:
+        # Append each cookie from selection to blacklist
+        host = c['host_key']
+        if not any(b == host for b in blacklist):
+            blacklist.append(host)
+            info(f"Added '{host}' to blacklist.")
 
 
 def cmd_delete_by_number(number_range=None, *args):
@@ -486,6 +539,39 @@ def cmd_delete_by_blacklist(*args):
         return cmd_delete_by_number(','.join(map(str, idxs)))
 
 
+def cmd_remove_from_whitelist(*args):
+    """
+    Remove the whitelist selection (swh) from whitelist.
+
+    Usage: rw
+    """
+    if selection.type != 'whitelist_selection':
+        warn("This command only works on whitelist selections. "
+             "Try using 'swh' first.")
+        return 1
+
+    for c in selection.data:
+        # Remove each cookie from whitelist selection from whitelist
+        whitelist.remove(c)
+        info(f"Remove '{c}' from whitelist.")
+
+def cmd_remove_from_blacklist(*args):
+    """
+    Remove the blacklist selection (sbh) from blacklist.
+
+    Usage: rw
+    """
+    if selection.type != 'blacklist_selection':
+        warn("This command only works on blacklist selections. "
+             "Try using 'sbh' first.")
+        return 1
+
+    for c in selection.data:
+        # Remove each cookie from blacklist selection from blacklist
+        blacklist.remove(c)
+        info(f"Remove '{c}' from blacklist.")
+
+
 COMMANDS = {'#1': 'Select',
             'sca': cmd_select_cookies_all,
             'sch': cmd_select_cookies_by_host,
@@ -506,6 +592,8 @@ COMMANDS = {'#1': 'Select',
 
             '#4': 'Add',
             'ah': cmd_add_host,
+            'aw': cmd_add_to_whitelist,
+            'ab': cmd_add_to_blacklist,
 
             '#5': 'Delete',
             'dn': cmd_delete_by_number,
@@ -513,7 +601,11 @@ COMMANDS = {'#1': 'Select',
             'de': cmd_delete_by_expired,
             'db': cmd_delete_by_blacklist,
 
-            '#6': 'Other',
+            '#6': 'Remove',
+            'rw': cmd_remove_from_whitelist,
+            'rb': cmd_remove_from_blacklist,
+
+            '#7': 'Other',
             'h': cmd_help,
             'x': cmd_exit,
             'q': cmd_quit}
