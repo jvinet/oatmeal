@@ -42,7 +42,7 @@ from rich.theme import Theme
 
 __version__ = '0.1'
 
-QUTE_PATH = '/home/archx/.local/share/qutebrowser/webengine'
+QUTE_PATH = '~/.local/share/qutebrowser/webengine'
 DB_PATH = QUTE_PATH + '/Cookies'
 WL_PATH = QUTE_PATH + '/whitelist.json'
 BL_PATH = QUTE_PATH + '/blacklist.json'
